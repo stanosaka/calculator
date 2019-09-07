@@ -24,15 +24,6 @@ dependencies {
 	testImplementation("io.cucumber:cucumber-junit:4.2.6")
 }
 
-jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.2
-			}
-		}
-	}
-}
 
 checkstyle {
 	checkstyleTest.enabled = false
