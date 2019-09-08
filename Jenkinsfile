@@ -1,8 +1,5 @@
 pipeline {
      agent any
-     triggers {
-          pollSCM('* * * * *')
-     }
      stages {
           stage("Compile") {
                steps {
@@ -14,17 +11,6 @@ pipeline {
                     sh "./gradlew test"
                }
           }
-          stage("Code coverage") {
-               steps {
-                    sh "./gradlew jacocoTestReport"
-                    sh "./gradlew jacocoTestCoverageVerification"
-               }
-          }
-          stage("Static code analysis") {
-               steps {
-                    sh "./gradlew checkstyleMain"
-               }
-          }
           stage("Package") {
                steps {
                     sh "./gradlew build"
@@ -33,7 +19,7 @@ pipeline {
 
           stage("Docker build") {
                steps {
-                    sh "docker build -t leszko/calculator ."
+                    sh "docker build -t stanosaka/calculator ."
                }
           }
 
@@ -48,26 +34,21 @@ pipeline {
 
           stage("Docker push") {
                steps {
-                    sh "docker push leszko/calculator"
+                    sh "docker push stanosaka/calculator"
                }
           }
           
           stage("Deploy to staging") {
                steps {
-                    sh "docker run -d --rm -p 8765:8080 --name calculator leszko/calculator"
+                    sh "docker run -d --rm -p 8765:8080 --name calculator stanosaka/calculator"
                }
           }
 
           stage("Acceptance test") {
                steps {
                     sleep 60
-                    sh "./gradlew acceptanceTest -Dcalculator.url=http://localhost:8765"
+                    sh "./acceptance_test.sh"
                }
-          }
-     }
-     post {
-          always {
-               sh "docker stop calculator"
           }
      }
 }
