@@ -37,15 +37,10 @@ pipeline {
                     sh "docker push stanosaka/calculator"
                }
           }
-          stage("Clean Docker") {
-               steps {
-                    sh "docker rm -f $(docker ps -aq)"
-               }
-          }
 
           stage("Deploy to staging") {
                steps {
-                    sh "docker rm -f $(docker ps -aq)"
+                    sh "docker rm -f stanosaka/calculator"
                     sh "docker run -d --rm -p 8765:8080 --name calculator stanosaka/calculator"
                }
           }
